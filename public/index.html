@@ -8,23 +8,32 @@
 <body><!-- ChatKit mount target -->
 <div id="chatkit-root"></div>
 
-<script type="module">
-  // 1) Load ChatKit (latest version)
-  import { mount } from "https://esm.sh/@openai/chatkit@latest";
+<!-- Load the ChatKit web component from OpenAI's CDN -->
+<script src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js" defer></script>
 
-  // 2) Fetch a temporary client secret from your API endpoint
-  async function getClientSecret() {
-    const res = await fetch("/api/chatkit-session", { method: "POST" });
-    if (!res.ok) throw new Error("Failed to get client_secret");
-    const { client_secret } = await res.json();
-    return client_secret;
-  }
+<script>
+  // Called once the CDN script finished loading
+  window.addEventListener("load", async () => {
+    async function getClientSecret() {
+      const res = await fetch("/api/chatkit-session", { method: "POST" });
+      if (!res.ok) throw new Error("Failed to get client_secret");
+      const { client_secret } = await res.json();
+      return client_secret;
+    }
 
-  // 3) Mount ChatKit UI inside the div
-  mount({
-    element: document.getElementById("chatkit-root"),
-    api: { getClientSecret },
-    theme: { light: { primaryColor: "#0B2381" } }
+    // Create the web component and configure it
+    const chat = document.createElement("openai-chatkit");
+    chat.setOptions({
+      api: { getClientSecret },
+      theme: { light: { primaryColor: "#0B2381" } }
+    });
+
+    chat.style.width = "100%";
+    chat.style.maxWidth = "420px";
+    chat.style.height = "600px";
+    chat.style.margin = "0 auto";
+
+    document.getElementById("chatkit-root").appendChild(chat);
   });
 </script></body>
 </html>
