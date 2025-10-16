@@ -5,5 +5,26 @@
   <title>Tylko — Demo</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body></body>
+<body><!-- ChatKit mount target -->
+<div id="chatkit-root"></div>
+
+<script type="module">
+  // 1) Load ChatKit (latest version)
+  import { mount } from "https://esm.sh/@openai/chatkit@latest";
+
+  // 2) Fetch a temporary client secret from your API endpoint
+  async function getClientSecret() {
+    const res = await fetch("/api/chatkit-session", { method: "POST" });
+    if (!res.ok) throw new Error("Failed to get client_secret");
+    const { client_secret } = await res.json();
+    return client_secret;
+  }
+
+  // 3) Mount ChatKit UI inside the div
+  mount({
+    element: document.getElementById("chatkit-root"),
+    api: { getClientSecret },
+    theme: { light: { primaryColor: "#0B2381" } }
+  });
+</script></body>
 </html>
