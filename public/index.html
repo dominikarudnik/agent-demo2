@@ -5,51 +5,5 @@
   <title>Tylko — Demo</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body><div id="chat">
-  <header>Tylko AI Assistant</header>
-  <div id="messages"></div>
-  <form id="form">
-    <input id="input" type="text" placeholder="Napisz wiadomość…" autocomplete="off" />
-    <button type="submit">Wyślij</button>
-  </form>
-</div>
-
-<script>
-  const $messages = document.getElementById('messages');
-  const $form = document.getElementById('form');
-  const $input = document.getElementById('input');
-  let threadId = localStorage.getItem('threadId') || null;
-
-  function addMsg(text, who) {
-    const div = document.createElement('div');
-    div.className = 'msg ' + who;
-    div.textContent = text;
-    $messages.appendChild(div);
-    $messages.scrollTop = $messages.scrollHeight;
-  }
-
-  $form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const text = $input.value.trim();
-    if (!text) return;
-    addMsg(text, 'user');
-    $input.value = '';
-
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, threadId })
-    });
-
-    const data = await res.json();
-    if (data.threadId && !threadId) {
-      threadId = data.threadId;
-      localStorage.setItem('threadId', threadId);
-    }
-    if (data.reply) addMsg(data.reply, 'bot');
-    if (data.error) addMsg('Błąd: ' + data.error, 'bot');
-  });
-
-  addMsg('Cześć! Tu Tylko — Twój asystent AI.', 'bot');
-</script></body>
+<body></body>
 </html>
