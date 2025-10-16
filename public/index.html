@@ -5,5 +5,20 @@
   <title>Tylko — Demo</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body></body>
+<body><div id="chatkit-root"></div>
+<script type="module">
+  import "https://esm.sh/@openai/chatkit";
+  async function getClientSecret() {
+    const res = await fetch("/api/chatkit-session", { method: "POST" });
+    if (!res.ok) throw new Error("Failed to get client_secret");
+    const { client_secret } = await res.json();
+    return client_secret;
+  }
+  (async () => {
+    const chat = document.createElement("openai-chatkit");
+    chat.setOptions({ api: { getClientSecret }, theme: { light: { primaryColor: "#0B2381" } } });
+    chat.style.width = "100%"; chat.style.maxWidth = "420px"; chat.style.height = "600px"; chat.style.margin = "0 auto";
+    document.getElementById("chatkit-root").appendChild(chat);
+  })();
+</script></body>
 </html>
